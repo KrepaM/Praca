@@ -1,0 +1,62 @@
+<div>
+  <div class="header">
+    <div>
+      {{mainPageLabel}}
+    </div>
+    <div class="flex-component">
+      <div *ngFor="let src of flagsPath; index as i">
+        <img [src]="src" (click)="changeLanguage(i)">
+      </div>
+    </div>
+  </div>
+  <div>
+    <div *ngIf="search">
+      <div>
+        {{insertVinNumber}}
+        <input [class]="inputClassName" [(ngModel)]="vin">
+        <button (click)="searchVIN()">{{searchLabel}}</button>
+        <button (click)="clearInput()">{{clearLabel}}</button>
+      </div>
+    </div>
+    <div *ngIf="!search">
+      <div *ngIf="warning">
+
+      </div>
+      <div> <!--Krótki opis auta-->
+        <div>
+          {{vinLabel}} 1234567890qwertyu
+          <div>
+            <div class="flex-component">
+              {{carName}}
+              AUDI
+            </div>
+            <div class="flex-component">
+              {{carModel}}
+              A4
+            </div>
+          </div>
+          <div>
+            <div class="flex-component">
+              {{carYear}}
+              2004
+            </div>
+            <div class="flex-component">
+              {{carColor}}
+              Red
+            </div>
+          </div>
+        <div>
+      </div>
+      <div> <!--Lista informacji-->
+
+      </div>
+      <div>
+        <button (click)="return()" class="btn btn-lg btn-primary">{{returnLabel}}</button>
+        <button (click)="generatePDFFile()">{{generateRaport}}</button>
+      </div>
+    </div>
+  </div>
+  <div class="header">
+    FOOTER
+  </div>
+</div>

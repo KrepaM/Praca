@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+// .defaultInputClass {
+// }
+
+// .errorInputClass {
+//   box-shadow: 0 0 10px #cc0000;
+// }
+
+$blue-color: #0a367d;
+$cream-color: #fffdd0;
+
+body {
+  background-color: $cream-color;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  background-color: $blue-color;
+}
+
+.flex-component {
+  display: flex;
+}
