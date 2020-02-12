@@ -1,62 +1,82 @@
-<div>
-  <div class="header">
-    <div>
-      {{mainPageLabel}}
-    </div>
-    <div class="flex-component">
-      <div *ngFor="let src of flagsPath; index as i">
-        <img [src]="src" (click)="changeLanguage(i)">
-      </div>
+<div class="header">
+  <div class="label">
+    {{mainPageLabel}}
+  </div>
+  <div class="flex-component">
+    <div *ngFor="let src of flagsPath; index as i">
+      <img [src]="src" (click)="changeLanguage(i)" class="flag">
     </div>
   </div>
-  <div>
-    <div *ngIf="search">
-      <div>
+</div>
+<div class="center-component">
+  <div *ngIf="search" class="search-component">
+    <div  class="flex-component">
+      <div class="main-label" style="margin-right: 5px">
         {{insertVinNumber}}
-        <input [class]="inputClassName" [(ngModel)]="vin">
-        <button (click)="searchVIN()">{{searchLabel}}</button>
-        <button (click)="clearInput()">{{clearLabel}}</button>
       </div>
-    </div>
-    <div *ngIf="!search">
-      <div *ngIf="warning">
-
-      </div>
-      <div> <!--Krótki opis auta-->
-        <div>
-          {{vinLabel}} 1234567890qwertyu
-          <div>
-            <div class="flex-component">
-              {{carName}}
-              AUDI
-            </div>
-            <div class="flex-component">
-              {{carModel}}
-              A4
-            </div>
-          </div>
-          <div>
-            <div class="flex-component">
-              {{carYear}}
-              2004
-            </div>
-            <div class="flex-component">
-              {{carColor}}
-              Red
-            </div>
-          </div>
-        <div>
-      </div>
-      <div> <!--Lista informacji-->
-
-      </div>
-      <div>
-        <button (click)="return()" class="btn btn-lg btn-primary">{{returnLabel}}</button>
-        <button (click)="generatePDFFile()">{{generateRaport}}</button>
-      </div>
+      <input [class]="inputClassName" [(ngModel)]="vin" type="text" style="margin-right: 5px" oninput="this.value = this.value.toUpperCase()" maxlength="17">
+      <button (click)="searchVIN()" class="button" style="margin-right: 5px">{{searchLabel}}</button>
+      <button (click)="clearInput()" class="button" style="margin-right: 5px">{{clearLabel}}</button>
     </div>
   </div>
-  <div class="header">
+  <div *ngIf="!search" class="display-component">
+    <div *ngIf="warning">
+      Warning
+    </div>
+    <table> <!--Krótki opis auta-->
+      <tr>
+        <td>
+          {{vinLabel}}
+        </td>
+        <td>
+          {{instances[0].VIN}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="flex-component">
+            {{carName}}
+            {{instances[0].carName}}
+          </div>
+        </td>
+        <td>
+          <div class="flex-component">
+            {{carModel}}
+            {{instances[0].model}}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="flex-component">
+            {{carYear}}
+            {{instances[0].yearProduction}}
+          </div>
+        </td>
+        <td>
+          <div class="flex-component">
+            {{carColor}}
+            {{instances[0].color}}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button (click)="return()" class="button" style="margin-right: 5px">{{returnLabel}}</button>
+        </td>
+        <td>
+          <button (click)="generatePDFFile()" class="button" style="margin-right: 5px">{{generateRaport}}</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div *ngFor="let instance of instances" class="center-second"> <!--Lista informacji-->
+    <info-instance [car]="instance"></info-instance>
+  </div>
+</div>
+<div class="footer">
+  <div class="label">
     FOOTER
   </div>
 </div>
+

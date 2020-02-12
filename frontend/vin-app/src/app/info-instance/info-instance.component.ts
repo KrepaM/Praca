@@ -1,5 +1,5 @@
 import { Car } from './../classes';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'info-instance',
@@ -7,5 +7,13 @@ import { Component } from '@angular/core';
 })
 
 export class InfoInstance {
-  car: Car;
+
+  //Variables
+  @Input() car: Car;
+  showDetails = false;
+
+  //Functions
+  changeShowStatus() {
+    this.showDetails = !this.showDetails;
+  }
 }

@@ -1,5 +1,5 @@
 export class Car {
-  vin: string;
+  VIN: string;
   carName: string;
   model: string;
   yearProduction: string;
@@ -11,27 +11,20 @@ export class Car {
   technicalCondition: string;
   mileage: string;
   date: string;
+}
 
-  isEqual(car: Car) {
-    if (
-      this.vin == car.vin &&
-      this.carName == car.carName &&
-      this.model == car.model &&
-      this.yearProduction == car.yearProduction &&
-      this.weekProduction == car.weekProduction &&
-      this.bodyType == car.bodyType &&
-      this.color == car.color &&
-      this.engineType == car.engineType &&
-      this.gearboxType == car.gearboxType &&
-      this.technicalCondition == car.technicalCondition &&
-      this.mileage == car.mileage &&
-      this.date == car.date
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+export enum BodyType {
+  sedan = "sedan",
+  estate = "estate",
+  coupe = "coupe",
+  SUV = "SUV"
+}
+
+export enum EngineType {
+  petrol = "petrol",
+  diesel = "diesel",
+  electric = "electric",
+  hybrid = "hybrid"
 }
 
 /*

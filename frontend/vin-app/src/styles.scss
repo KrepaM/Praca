@@ -7,19 +7,120 @@
 //   box-shadow: 0 0 10px #cc0000;
 // }
 
-$blue-color: #0a367d;
-$cream-color: #fffdd0;
+$dark-blue-color: #030027;
+$cream-color: #f2f3d9;
+$background-font-color: #dc9e82;
+$rose-color: #c16e70;
+$lighter-blue-color: #151e3f;
+
+$radius: 15px;
+$padding: 5px;
+$font-size: 16px;
 
 body {
   background-color: $cream-color;
+  margin: 0px;
+  padding: 0px;
+  font-size: $font-size;
+  font-weight: bold;
 }
 
 .header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  background-color: $blue-color;
+  background-color: $dark-blue-color;
+  border-radius: 0px 0px $radius $radius;
+  color: $background-font-color;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  justify-content: space-between;
+  background-color: $dark-blue-color;
+  border-radius: $radius $radius 0px 0px;
+  color: $background-font-color;
 }
 
 .flex-component {
   display: flex;
+}
+
+.center-component {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 6em;
+  min-height: 9em;
+  padding: 1em 0 1em 0;
+  width: 50em;
+  background-color: $background-font-color;
+  border-radius: $radius;
+  color: $dark-blue-color;
+  font-size: 20px;
+}
+
+.center-second {
+  background-color: $background-font-color;
+  border: solid 1px $dark-blue-color;
+  border-radius: $radius;
+  color: $dark-blue-color;
+  font-size: 20px;
+  margin: 2px 0px 2px 300px;
+  padding: 1em 0 1em 0;
+  width: 25em;
+}
+
+.flag {
+  margin: $padding;
+  cursor: pointer;
+}
+
+.label {
+  padding: $padding 0px 0px $padding;
+}
+
+.main-label {
+  color: $dark-blue-color;
+}
+
+.default-input-class {
+  background-color: $rose-color;
+  border: 1px solid $dark-blue-color;
+  border-radius: $radius/3;
+}
+
+.error-input-class {
+  box-shadow: 0 0 3px red;
+  border: none;
+  border-radius: inherit;
+}
+
+.search-component {
+  justify-content: center;
+  display: flex;
+  padding-top: 4em;
+}
+
+.display-component {
+  justify-content: center;
+  display: flex;
+  padding-top: 4em;
+}
+
+.button {
+  border: none;
+  border-radius: $radius/3;
+  background-color: $lighter-blue-color;
+  color: $background-font-color;
+}
+
+.car-main-info {
+  display: flex;
+  margin: 0px 30px 15px 0px;
 }

@@ -1,0 +1,125 @@
+<div >
+  <table>
+    <tr>
+      <td>
+        <button class="button" (click)="changeShowStatus()">showDetails</button>
+      </td>
+      <td>
+
+      </td>
+    </tr>
+    <tr>
+      <td>
+
+      </td>
+      <td>
+        <div *ngIf="!showDetails">
+          <div class="flex-component">
+            Data
+            {{car.date}}
+          </div>
+          <div class="flex-component">
+            Przebieg
+            {{car.mileage}}
+          </div>
+          <div class="flex-component">
+            Stan techniczny
+            {{car.technicalCondition}}
+          </div>
+        </div>
+        <div *ngIf="showDetails">
+          <table>
+            <tr>
+              <td>
+                Marka
+              </td>
+              <td>
+                {{car.carName}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Model
+              </td>
+              <td>
+                {{car.model}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Rok produkcji
+              </td>
+              <td>
+                {{car.yearProduction}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Tydzien produkcji
+              </td>
+              <td>
+                {{car.weekProduction}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Typ nadwozia
+              </td>
+              <td>
+                {{car.bodyType}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kolor
+              </td>
+              <td>
+                {{car.color}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Typ silnika
+              </td>
+              <td>
+                {{car.engineType}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Typ skrzyni biegów
+              </td>
+              <td>
+                {{car.gearboxType}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Stan techniczny
+              </td>
+              <td>
+                {{car.technicalCondition}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Przebieg
+              </td>
+              <td>
+                {{car.mileage}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Data dodania
+              </td>
+              <td>
+                {{car.date}}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
