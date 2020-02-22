@@ -4,26 +4,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-// const cors = require('cors');
-// import path from "path";
-// import * as routes from "./routes";
-// import bodyParser from "body-parser";
-const port = 8080;
+// import web3 from "web3";
+// import tx from "ethereumjs-tx";
+const mysql_1 = __importDefault(require("mysql"));
+const con = mysql_1.default.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'Maciej16',
+    database: "vin_app",
+});
+// con.connect(function(err) {
+//   if(err) throw err;
+//   con.query("")
+// });
+function getInfoByVIN(VIN) {
+    // con.connect((err) => {
+    //   if (err) console.log(err);
+    //   con.query("SELECT * FROM VIN_INFO WHERE VIN = '" + VIN + "'", (Err, rows, fields) => {
+    //     if (Err) throw err;
+    //     return rows;
+    //   });
+    // })
+    con.query("SELECT * FROM VIN_INFO WHERE VIN = '" + VIN + "'", (Err, rows, fields) => {
+        if (Err)
+            throw Err;
+        return rows;
+    });
+}
+// const web3js = new web3('http://localhost:7545');
+// const address = '0x59F35f4A874AC0184B99a34310870866cbCFd5e2';
+const serverPort = 8080;
 const app = express_1.default();
-// Configure Express to parse JSON
 app.use(express_1.default.json());
-// app.use(bodyParser);
-// Configure Express to serve static files in the public folder
-// app.use(express.static(path.join(__dirname, "public")));
-// Configure routes
-// routes.register( app );
-// start the express server
-app.listen(port, () => {
+app.listen(serverPort, () => {
     // tslint:disable-next-line:no-console
-    console.log(`server started at http://localhost:${port}`);
+    console.log(`server started at http://localhost:${serverPort}`);
+    // web3js.eth.
 });
 app.get("/", (req, res) => {
-    // res.render("index");
     res.send('Hello');
 });
 app.post("/saveNewInfo", (req, res) => {
@@ -35,58 +53,62 @@ app.post("/saveNewInfo", (req, res) => {
     }
 });
 app.post("/getInfoByVIN", (req, res) => {
-    console.log('body: ' + JSON.stringify(req.body));
-    console.log('body.vin: ' + JSON.stringify(req.body.vin));
+    /*
     if (verifyVINNumber(req.body.vin)) {
-        const response = [
-            {
-                VIN: req.body.vin,
-                carName: 'Audi',
-                model: 'A4',
-                yearProduction: '2004',
-                weekProduction: '22',
-                bodyType: 'sedan',
-                color: 'red',
-                engineType: 'petrol',
-                gearboxType: 'manual',
-                technicalCondition: 'good',
-                mileage: '178000',
-                date: '2011-05-06'
-            },
-            {
-                VIN: req.body.vin,
-                carName: 'Audi',
-                model: 'A4',
-                yearProduction: '2004',
-                weekProduction: '22',
-                bodyType: 'sedan',
-                color: 'red',
-                engineType: 'petrol',
-                gearboxType: 'manual',
-                technicalCondition: 'good',
-                mileage: '223000',
-                date: '2012-06-07'
-            },
-            {
-                VIN: req.body.vin,
-                carName: 'Audi',
-                model: 'A4',
-                yearProduction: '2004',
-                weekProduction: '22',
-                bodyType: 'sedan',
-                color: 'red',
-                engineType: 'petrol',
-                gearboxType: 'manual',
-                technicalCondition: 'good',
-                mileage: '293000',
-                date: '2013-12-12'
-            }
-        ];
-        res.send(response);
+      const response: Car[] = [
+        {
+          VIN: req.body.vin,
+          carName: 'Audi',
+          model: 'A4',
+          yearProduction: '2004',
+          weekProduction: '22',
+          bodyType: 'sedan',
+          color: 'red',
+          engineType: 'petrol',
+          gearboxType: 'manual',
+          technicalCondition: 'good',
+          mileage: '178000',
+          date: '2011-05-06'
+        },
+        {
+          VIN: req.body.vin,
+          carName: 'Audi',
+          model: 'A4',
+          yearProduction: '2004',
+          weekProduction: '22',
+          bodyType: 'sedan',
+          color: 'red',
+          engineType: 'petrol',
+          gearboxType: 'manual',
+          technicalCondition: 'good',
+          mileage: '223000',
+          date: '2012-06-07'
+        },
+        {
+          VIN: req.body.vin,
+          carName: 'Audi',
+          model: 'A4',
+          yearProduction: '2004',
+          weekProduction: '22',
+          bodyType: 'sedan',
+          color: 'red',
+          engineType: 'petrol',
+          gearboxType: 'manual',
+          technicalCondition: 'good',
+          mileage: '293000',
+          date: '2013-12-12'
+        }
+      ];
+      res.send(response);
+    } else {
+      res.send({ response: "Incorrect VIN number" });
     }
-    else {
-        res.send({ response: "Incorrect VIN number" });
-    }
+    */
+    con.query("SELECT * FROM VIN_INFO WHERE VIN = '" + req.body.vin + "'", (err, rows, fields) => {
+        if (err)
+            throw err;
+        res.send(rows);
+    });
 });
 function verifyVINNumber(VIN) {
     if (VIN === '0123456789QWERTYU' || VIN === undefined) {
@@ -120,14 +142,12 @@ function verifyVIN(vin) {
         let value = 0;
         const weigth = weights[i];
         if (c >= "A" && c <= "Z") {
-            // value = values[c - "A"];
             value = values[returnIndex(c, "A")];
             if (value === 0) {
                 return false;
             }
         }
         else if (c >= "0" && c <= "9") {
-            // value = c - "0";
             value = returnIndex(c, "0");
         }
         else {
@@ -186,4 +206,5 @@ function transliterate(check) {
 }
 class Car {
 }
+// npm run start
 //# sourceMappingURL=index.js.map

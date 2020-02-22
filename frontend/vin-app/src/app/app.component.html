@@ -35,13 +35,17 @@
       <tr>
         <td>
           <div class="flex-component">
-            {{carName}}
+            <div class="label-color">
+              {{carName}}
+            </div>
             {{instances[0].carName}}
           </div>
         </td>
         <td>
           <div class="flex-component">
-            {{carModel}}
+            <div class="label-color">
+              {{carYear}}
+            </div>
             {{instances[0].model}}
           </div>
         </td>
@@ -49,13 +53,17 @@
       <tr>
         <td>
           <div class="flex-component">
-            {{carYear}}
+            <div class="label-color">
+              {{carYear}}
+            </div>
             {{instances[0].yearProduction}}
           </div>
         </td>
         <td>
           <div class="flex-component">
-            {{carColor}}
+            <div class="label-color">
+              {{carColor}}
+            </div>
             {{instances[0].color}}
           </div>
         </td>
@@ -71,7 +79,7 @@
     </table>
   </div>
   <div *ngFor="let instance of instances" class="center-second"> <!--Lista informacji-->
-    <info-instance [car]="instance"></info-instance>
+    <info-instance [car]="instance" [languageIndex]="languageIndex"></info-instance>
   </div>
 </div>
 <div class="footer">

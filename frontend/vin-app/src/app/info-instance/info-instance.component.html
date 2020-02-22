@@ -14,107 +14,121 @@
       </td>
       <td>
         <div *ngIf="!showDetails">
-          <div class="flex-component">
-            Data
-            {{car.date}}
-          </div>
-          <div class="flex-component">
-            Przebieg
-            {{car.mileage}}
-          </div>
-          <div class="flex-component">
-            Stan techniczny
-            {{car.technicalCondition}}
-          </div>
-        </div>
-        <div *ngIf="showDetails">
           <table>
             <tr>
-              <td>
-                Marka
+              <td class="label-color">
+                {{carAddingDateLabel}}
               </td>
               <td>
-                {{car.carName}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Model
-              </td>
-              <td>
-                {{car.model}}
+                {{car.date | date:'yyyy-MM-dd'}}
               </td>
             </tr>
             <tr>
-              <td>
-                Rok produkcji
-              </td>
-              <td>
-                {{car.yearProduction}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Tydzien produkcji
-              </td>
-              <td>
-                {{car.weekProduction}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Typ nadwozia
-              </td>
-              <td>
-                {{car.bodyType}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Kolor
-              </td>
-              <td>
-                {{car.color}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Typ silnika
-              </td>
-              <td>
-                {{car.engineType}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Typ skrzyni biegów
-              </td>
-              <td>
-                {{car.gearboxType}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Stan techniczny
-              </td>
-              <td>
-                {{car.technicalCondition}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Przebieg
+              <td class="label-color">
+                {{carMileageLabel}}
               </td>
               <td>
                 {{car.mileage}}
               </td>
             </tr>
             <tr>
-              <td>
-                Data dodania
+              <td class="label-color">
+                {{carTechnicalConditionLabel}}
               </td>
               <td>
-                {{car.date}}
+                {{car.technicalCondition}}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div *ngIf="showDetails">
+          <table>
+            <tr>
+              <td class="label-color">
+                {{carNameLabel}}
+              </td>
+              <td>
+                {{car.carName}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carModelLabel}}
+              </td>
+              <td>
+                {{car.model}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carYearProductionLabel}}
+              </td>
+              <td>
+                {{car.yearProduction}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carWeekProductionLabel}}
+              </td>
+              <td>
+                {{car.weekProduction}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carBodyStyleLabel}}
+              </td>
+              <td>
+                {{car.bodyType}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carColorLabel}}
+              </td>
+              <td>
+                {{car.color}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carEngineTypeLabel}}
+              </td>
+              <td>
+                {{car.engineType}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carGearboxTypeLabel}}
+              </td>
+              <td>
+                {{car.gearboxType}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carTechnicalConditionLabel}}
+              </td>
+              <td>
+                {{car.technicalCondition}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carMileageLabel}}
+              </td>
+              <td>
+                {{car.mileage}}
+              </td>
+            </tr>
+            <tr>
+              <td class="label-color">
+                {{carAddingDateLabel}}
+              </td>
+              <td>
+                {{car.date | date:'yyyy-MM-dd' }}
               </td>
             </tr>
           </table>

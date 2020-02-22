@@ -2,7 +2,7 @@ import { ConnectionService } from './connection.service';
 import { Car } from "./classes";
 import { InfoInstance } from "./info-instance/info-instance.component";
 import { Translator } from "./translator.service";
-import { Component } from "@angular/core";
+import { Component, Output, EventEmitter } from "@angular/core";
 
 @Component({
   selector: "app-root",
@@ -10,21 +10,19 @@ import { Component } from "@angular/core";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  constructor(private connection: ConnectionService) { }
+  constructor(private connection: ConnectionService, private translator: Translator) { }
 
   ngOnInit(): void {
     this.updateLabels();
   }
 
-  // Services
-  translator = new Translator();
-
   // Main
   search = true;
-  vin = "WBAAP71050PJ49144"; // ["",
+  vin = "WBAAP71050PJ49144";
   numebrOfRecords = 0;
   flagsPath = ["../assets/icons/PL.png", "../assets/icons/SH.png"];
   instances: Car[] = [];
+  languageIndex = 0;
 
   // CSS
   defaultInputClass = "default-input-class";
@@ -55,12 +53,11 @@ export class AppComponent {
 
   searchVIN() {
     if (this.verifyVIN()) {
-      this.search = false;
       this.szukajInformacjiPoVIN();
+      this.search = false;
     } else {
       this.changeInputClass();
     }
-    // this.search = !this.search;
   }
 
   verifyVIN(): boolean {
@@ -150,7 +147,10 @@ export class AppComponent {
   }
 
   szukajInformacjiPoVIN() {
-    this.connection.getInfo(this.vin).subscribe((res) => {
+    this.connection.getInfo(this.vin).subscribe((res: any[]) => {
+      // for (let i = 0; i < res.length; i++) {
+      //   this.instances.push(res[i]);
+      // }
       this.instances = res;
     });
   }
@@ -167,6 +167,7 @@ export class AppComponent {
 
   changeLanguage(index: number) {
     this.translator.languageIndex = index;
+    this.languageIndex = index;
     this.updateLabels();
   }
 
