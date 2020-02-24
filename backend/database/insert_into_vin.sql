@@ -1,4 +1,4 @@
-INSERT INTO VIN_INFO (
+INSERT INTO VIN_APP.VIN_INFO (
     VIN,
     carName,
     model,

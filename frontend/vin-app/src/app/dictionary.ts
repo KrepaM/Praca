@@ -1,5 +1,42 @@
 export class Languages {
 
+  keys = [
+    'CAR_ADDING_DATE',
+    'CAR_BODY_STYLE_LABEL',
+    'CAR_COLOR_LABEL',
+    'CAR_CONDITION_ACCURATE',
+    'CAR_CONDITION_BAD',
+    'CAR_CONDITION_CRITICAL',
+    'CAR_CONDITION_EXEMPLARY',
+    'CAR_CONDITION_GOOD',
+    'CAR_CONDITION_LABEL',
+    'CAR_CONDITION_VERY_BAD',
+    'CAR_CONDITION_VERY_GOOD',
+    'CAR_ENGINE_TYPE',
+    'CAR_GEARBOX_TYPE',
+    'CAR_HAS_BEEN_WRECKED_WARNING',
+    'CAR_MILEAGE_LABEL',
+    'CAR_MODEL_LABEL',
+    'CAR_NAME_LABEL',
+    'CAR_PRODUCTION_YEAR_LABEL',
+    'CAR_PRODUCTION_WEEK_LABEL',
+    'CLEAR_INPUT_LABEL',
+    'CONDITION_LABEL',
+    'DATE_LABEL',
+    'GENERATE_RAPORT_LABEL',
+    'INSERT_VIN_NUMBER_LABEL',
+    'MAIN_PAGE_LABEL',
+    'MULTIPLE_CARS_USING_ONE_VIN_WARNING_LABEL',
+    'NEW_OWNER_LABEL',
+    'NUMBER_OF_OWNERS_LABEL',
+    'RETURN_LABEL',
+    'SCRAP_CAR_LABEL',
+    'SEARCH_LABEL',
+    'SHOW_DETAILS_LABEL',
+    'STOLEN_CAR_LABEL',
+    'VIN_NUMBER_NOT_FOUND_WARNING_LABEL'
+  ];
+
   languages = [
     {
       language: "PL",
@@ -30,8 +67,13 @@ export class Languages {
         INSERT_VIN_NUMBER_LABEL: "Wpisz numer VIN auta",
         MAIN_PAGE_LABEL: "Autoryzowany portal sprawdzający historię auta",
         MULTIPLE_CARS_USING_ONE_VIN_WARNING_LABEL: "Znaleziono kilka aut z tym samym numerem VIN",
+        NEW_OWNER_LABEL: "Nowy właściciel",
+        NUMBER_OF_OWNERS_LABEL: "Liczba posiadaczy",
         RETURN_LABEL: "Powrót",
+        SCRAP_CAR_LABEL: "Pojazd został zezłomowany",
         SEARCH_LABEL: "Szukaj",
+        SHOW_DETAILS_LABEL: "Pokaż szczegóły",
+        STOLEN_CAR_LABEL: "Pojazd został skradziony",
         VIN_NUMBER_NOT_FOUND_WARNING_LABEL: "Nie znaleziono informacji o aucie z podanym numerem VIN"
       }
     },
@@ -64,12 +106,19 @@ export class Languages {
         INSERT_VIN_NUMBER_LABEL: "Insert car's VIN number",
         MAIN_PAGE_LABEL: "Authorized car's history checking site",
         MULTIPLE_CARS_USING_ONE_VIN_WARNING_LABEL: "Multiple cars found using the same VIN number",
+        NEW_OWNER_LABEL: "New owner",
+        NUMBER_OF_OWNERS_LABEL: "Number of owners",
         RETURN_LABEL: "Return",
+        SCRAP_CAR_LABEL: "Vehicle was scraped",
         SEARCH_LABEL: "Search",
+        SHOW_DETAILS_LABEL: "Show details",
+        STOLEN_CAR_LABEL: "Car was stolen",
         VIN_NUMBER_NOT_FOUND_WARNING_LABEL: "No information has been found for this VIN number"
       }
     }
   ];
 
 }
+
+
 

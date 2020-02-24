@@ -1,6 +1,4 @@
 import express from "express";
-// import web3 from "web3";
-// import tx from "ethereumjs-tx";
 import mysql from "mysql";
 
 const con = mysql.createConnection({
@@ -10,29 +8,6 @@ const con = mysql.createConnection({
   database: "vin_app",
 });
 
-// con.connect(function(err) {
-//   if(err) throw err;
-//   con.query("")
-// });
-
-function getInfoByVIN(VIN: string) {
-  // con.connect((err) => {
-  //   if (err) console.log(err);
-  //   con.query("SELECT * FROM VIN_INFO WHERE VIN = '" + VIN + "'", (Err, rows, fields) => {
-  //     if (Err) throw err;
-  //     return rows;
-  //   });
-  // })
-  con.query("SELECT * FROM VIN_INFO WHERE VIN = '" + VIN + "'", (Err, rows, fields) => {
-    if (Err) throw Err;
-    return rows;
-  });
-}
-
-// const web3js = new web3('http://localhost:7545');
-
-// const address = '0x59F35f4A874AC0184B99a34310870866cbCFd5e2';
-
 const serverPort = 8080;
 const app = express();
 
@@ -41,7 +16,6 @@ app.use(express.json());
 app.listen(serverPort, () => {
   // tslint:disable-next-line:no-console
   console.log(`server started at http://localhost:${serverPort}`);
-  // web3js.eth.
 });
 
 app.get("/", (req: any, res) => {
@@ -58,60 +32,15 @@ app.post("/saveNewInfo", (req, res) => {
 });
 
 app.post("/getInfoByVIN", (req, res) => {
-  /*
-  if (verifyVINNumber(req.body.vin)) {
-    const response: Car[] = [
-      {
-        VIN: req.body.vin,
-        carName: 'Audi',
-        model: 'A4',
-        yearProduction: '2004',
-        weekProduction: '22',
-        bodyType: 'sedan',
-        color: 'red',
-        engineType: 'petrol',
-        gearboxType: 'manual',
-        technicalCondition: 'good',
-        mileage: '178000',
-        date: '2011-05-06'
-      },
-      {
-        VIN: req.body.vin,
-        carName: 'Audi',
-        model: 'A4',
-        yearProduction: '2004',
-        weekProduction: '22',
-        bodyType: 'sedan',
-        color: 'red',
-        engineType: 'petrol',
-        gearboxType: 'manual',
-        technicalCondition: 'good',
-        mileage: '223000',
-        date: '2012-06-07'
-      },
-      {
-        VIN: req.body.vin,
-        carName: 'Audi',
-        model: 'A4',
-        yearProduction: '2004',
-        weekProduction: '22',
-        bodyType: 'sedan',
-        color: 'red',
-        engineType: 'petrol',
-        gearboxType: 'manual',
-        technicalCondition: 'good',
-        mileage: '293000',
-        date: '2013-12-12'
-      }
-    ];
-    res.send(response);
-  } else {
-    res.send({ response: "Incorrect VIN number" });
-  }
-  */
+  const response: { info: any[], addInfo: any[] } = { info: undefined, addInfo: undefined };
   con.query("SELECT * FROM VIN_INFO WHERE VIN = '" + req.body.vin + "'", (err, rows, fields) => {
     if (err) throw err;
-    res.send(rows);
+    response.info = rows;
+  });
+  con.query("SELECT * FROM OTHER_INFO WHERE VIN = '" + req.body.vin + "'", (err, rows, fields) => {
+    if (err) throw err;
+    response.addInfo = rows;
+    res.send(response);
   });
 });
 
@@ -121,16 +50,6 @@ function verifyVINNumber(VIN: string): boolean {
   }
   return true;
 }
-/*
-function returnDictionaryValue(key: string) {
-    const dictionary = {
-        INCORRECT_VIN_NUMBER: "Incorrect VIN number",
-        abd: "abc"
-    }
-    return dictionary;
-}
-*/
-
 
 function verifyVIN(vin: string): boolean {
   if (vin.length !== 17) {

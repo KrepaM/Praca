@@ -21,8 +21,12 @@ export class AppComponent {
   vin = "WBAAP71050PJ49144";
   numebrOfRecords = 0;
   flagsPath = ["../assets/icons/PL.png", "../assets/icons/SH.png"];
-  instances: Car[] = [];
+  mainInfo: Car[] = [];
+  addInfo: any[] = [];
   languageIndex = 0;
+  numberOfOwners = 0;
+  stolenInfo: any[] = [];
+  scrapInfo: any[] = [];
 
   // CSS
   defaultInputClass = "default-input-class";
@@ -41,6 +45,10 @@ export class AppComponent {
   carModel;
   carYear;
   carColor;
+  numberOfOwnersLabel;
+  dateLabel;
+  carWasStolenLabel;
+  carWasScrapedLabel;
 
   // Functions
   changeInputClass() {
@@ -146,12 +154,22 @@ export class AppComponent {
     return -1;
   }
 
+  //info: 1 - stolen, 2 - scraped, 3 - new owner
+
   szukajInformacjiPoVIN() {
-    this.connection.getInfo(this.vin).subscribe((res: any[]) => {
-      // for (let i = 0; i < res.length; i++) {
-      //   this.instances.push(res[i]);
-      // }
-      this.instances = res;
+    this.connection.getInfo(this.vin).subscribe((res: { info: any[], addInfo: any[] }) => {
+      console.log(res);
+      this.mainInfo = res.info;
+      this.addInfo = res.addInfo;
+      for (let i = 0; i < this.addInfo.length; i++) {
+        if (this.addInfo[i].info === 1) {
+          this.stolenInfo.push(this.addInfo[i]);
+        } else if (this.addInfo[i].info === 2) {
+          this.scrapInfo.push(this.addInfo[i]);
+        } else if (this.addInfo[i].info === 3) {
+          this.numberOfOwners++;
+        }
+      }
     });
   }
 
@@ -171,6 +189,14 @@ export class AppComponent {
     this.updateLabels();
   }
 
+  translateTechnicalCondition(valueToTranslate: string) {
+    for (let obj of this.translator.languagesModule.languages) {
+      for (let key of this.translator.languagesModule.keys) {
+        if (valueToTranslate === obj.values[key]) return this.translator.languagesModule.languages[this.languageIndex].values[key];
+      }
+    }
+  }
+
   updateLabels() {
     this.returnLabel = this.translator.translate("RETURN_LABEL");
     this.searchLabel = this.translator.translate("SEARCH_LABEL");
@@ -182,6 +208,10 @@ export class AppComponent {
     this.carModel = this.translator.translate("CAR_MODEL_LABEL");
     this.carYear = this.translator.translate("CAR_PRODUCTION_YEAR_LABEL");
     this.carColor = this.translator.translate("CAR_COLOR_LABEL");
+    this.numberOfOwnersLabel = this.translator.translate("NUMBER_OF_OWNERS_LABEL");
+    this.dateLabel = this.translator.translate('AR_ADDING_DATE');
+    this.carWasStolenLabel = this.translator.translate('STOLEN_CAR_LABEL');
+    this.carWasScrapedLabel = this.translator.translate('SCRAP_CAR_LABEL');
   }
 
   isEqual(car1: Car, car2: Car): boolean {
@@ -203,26 +233,26 @@ export class AppComponent {
   }
 
   isAnyDeparture() {
-    for (let i = 1; i < this.instances.length; i++) {
-      if (!this.isEqual(this.instances[0], this.instances[i])) {
+    for (let i = 1; i < this.mainInfo.length; i++) {
+      if (!this.isEqual(this.mainInfo[0], this.mainInfo[i])) {
       }
     }
   }
 
   sortByDate() {
     let arr = [];
-    while (this.instances.length > 0) {
-      arr.push(this.instances.splice(this.findOldest(), 1));
+    while (this.mainInfo.length > 0) {
+      arr.push(this.mainInfo.splice(this.findOldest(), 1));
     }
-    this.instances = arr;
+    this.mainInfo = arr;
   }
 
   findOldest() {
-    let d = this.instances[0].date;
+    let d = this.mainInfo[0].date;
     let index = 0;
-    for (let i = 1; i < this.instances.length; i++) {
-      if (!this.compareDates(this.instances[i].date, d)) {
-        d = this.instances[i].date;
+    for (let i = 1; i < this.mainInfo.length; i++) {
+      if (!this.compareDates(this.mainInfo[i].date, d)) {
+        d = this.mainInfo[i].date;
         index = i;
       }
     }

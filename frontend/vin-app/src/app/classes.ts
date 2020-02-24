@@ -27,6 +27,19 @@ export enum EngineType {
   hybrid = "hybrid"
 }
 
+
+function returnAddInfo(num: number) {
+  if (num === 1) {
+    return 'STOLEN_CAR_LABEL';
+  } else if (num === 2) {
+    return 'SCRAP_CAR_LABEL';
+  } else if (num === 3) {
+    return 'NEW_OWNER_LABEL';
+  } else return 'INTERNAL_ERROR';
+}
+
+//info: 1 - stolen, 2 - scraped, 3 - new owner
+
 /*
 export class Person {
   id: string;

@@ -20,52 +20,61 @@
     </div>
   </div>
   <div *ngIf="!search" class="display-component">
-    <div *ngIf="warning">
-      Warning
-    </div>
-    <table> <!--Krótki opis auta-->
-      <tr>
+    <table>
+      <tr *ngFor="let stolen of stolenInfo">
         <td>
+          {{stolen.date | date:'yyyy-MM-dd' }}
+        </td>
+        <td>
+          {{carWasStolenLabel}}
+        </td>
+      </tr>
+      <tr *ngFor="let scrap of scrapInfo">
+        <td>
+          {{scrap.date | date:'yyyy-MM-dd' }}
+        </td>
+        <td>
+          {{carWasScrapedLabel}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label-color">
           {{vinLabel}}
         </td>
         <td>
-          {{instances[0].VIN}}
+          {{mainInfo[0].VIN}}
         </td>
       </tr>
       <tr>
-        <td>
-          <div class="flex-component">
-            <div class="label-color">
-              {{carName}}
-            </div>
-            {{instances[0].carName}}
-          </div>
+        <td class="label-color">
+          {{carName}}
         </td>
         <td>
-          <div class="flex-component">
-            <div class="label-color">
-              {{carYear}}
-            </div>
-            {{instances[0].model}}
-          </div>
+          {{mainInfo[0].carName}}
         </td>
       </tr>
       <tr>
-        <td>
-          <div class="flex-component">
-            <div class="label-color">
-              {{carYear}}
-            </div>
-            {{instances[0].yearProduction}}
-          </div>
+        <td class="label-color">
+          {{carYear}}
         </td>
         <td>
-          <div class="flex-component">
-            <div class="label-color">
-              {{carColor}}
-            </div>
-            {{instances[0].color}}
-          </div>
+          {{mainInfo[0].yearProduction}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label-color">
+          {{carColor}}
+        </td>
+        <td>
+          {{mainInfo[0].color}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label-color">
+          {{numberOfOwnersLabel}}
+        </td>
+        <td>
+          {{numberOfOwners}}
         </td>
       </tr>
       <tr>
@@ -78,8 +87,10 @@
       </tr>
     </table>
   </div>
-  <div *ngFor="let instance of instances" class="center-second"> <!--Lista informacji-->
-    <info-instance [car]="instance" [languageIndex]="languageIndex"></info-instance>
+  <div *ngIf="!search">
+    <div *ngFor="let instance of mainInfo" class="center-second">
+      <info-instance [car]="instance" [languageIndex]="languageIndex"></info-instance>
+    </div>
   </div>
 </div>
 <div class="footer">

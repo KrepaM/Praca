@@ -32,6 +32,7 @@ export class InfoInstance implements OnChanges {
   carTechnicalConditionLabel = this.translator.translate('CAR_CONDITION_LABEL');
   carMileageLabel = this.translator.translate('CAR_MILEAGE_LABEL');
   carAddingDateLabel = this.translator.translate('CAR_ADDING_DATE');
+  showDetailsLabel;
 
 
   //Functions
@@ -51,5 +52,6 @@ export class InfoInstance implements OnChanges {
     this.carTechnicalConditionLabel = this.translator.translate('CAR_CONDITION_LABEL');
     this.carMileageLabel = this.translator.translate('CAR_MILEAGE_LABEL');
     this.carAddingDateLabel = this.translator.translate('CAR_ADDING_DATE');
+    this.showDetailsLabel = this.translator.translate('SHOW_DETAILS_LABEL');
   }
 }
