@@ -1,5 +1,8 @@
 import express from "express";
 import mysql from "mysql";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { Dictionary } from "./dictionary";
 
 const con = mysql.createConnection({
   host: 'localhost',
@@ -8,117 +11,229 @@ const con = mysql.createConnection({
   database: "vin_app",
 });
 
+const hashedPassword = "9f01b4bc5b32af8161d79b1363c7e012";
+
+const carsModels = new Dictionary();
+
 const serverPort = 8080;
 const app = express();
 
 app.use(express.json());
+
+// Start server
 
 app.listen(serverPort, () => {
   // tslint:disable-next-line:no-console
   console.log(`server started at http://localhost:${serverPort}`);
 });
 
+// Routing
+
 app.get("/", (req: any, res) => {
   res.send('Hello');
 });
 
-app.post("/saveNewInfo", (req, res) => {
-  if (verifyVINNumber(req.body.vin)) {
-
-    res.send({ response: "Added new info" });
+app.post("/getInfoByVIN", (req, res) => {
+  if (validVINNumber(req.body.vin)) {
+    const response: { info: any[], addInfo: any[] } = { info: undefined, addInfo: undefined };
+    con.query("SELECT * FROM VIN_INFO WHERE VIN = '" + req.body.vin + "'", (err, rows, fields) => {
+      if (err) throw err;
+      response.info = rows;
+    });
+    con.query("SELECT * FROM OTHER_INFO WHERE VIN = '" + req.body.vin + "'", (err, rows, fields) => {
+      if (err) throw err;
+      response.addInfo = rows;
+      res.send(response);
+    });
   } else {
-    res.send({ response: "Incorrect VIN number" });
+    const response: { statement: string } = { statement: "VIN_NUMBER_NOT_FOUND_WARNING_LABEL" };
+    res.send(response);
   }
 });
 
-app.post("/getInfoByVIN", (req, res) => {
-  const response: { info: any[], addInfo: any[] } = { info: undefined, addInfo: undefined };
-  con.query("SELECT * FROM VIN_INFO WHERE VIN = '" + req.body.vin + "'", (err, rows, fields) => {
-    if (err) throw err;
-    response.info = rows;
-  });
-  con.query("SELECT * FROM OTHER_INFO WHERE VIN = '" + req.body.vin + "'", (err, rows, fields) => {
-    if (err) throw err;
-    response.addInfo = rows;
+app.post("/sendIdentifier", (req, res) => {
+  if (req.body.identifier && req.body.identifier.length > 5 && validIdentifier(req.body.identifier)) {
+    const response: { auth: boolean, token: any } = { auth: true, token: generateToken(req.body.identifier.toString()) };
     res.send(response);
-  });
+  } else {
+    const response = { errorDescription: "INCORRECT_IDENTIFIER_ERROR" };
+    res.send(response);
+  }
 });
 
-function verifyVINNumber(VIN: string): boolean {
-  if (VIN === '0123456789QWERTYU' || VIN === undefined) {
+app.post("/saveNewEntity", (req, res) => {
+  if (validToken(req.body.token)) {
+    if (validEntity(req.body.car)) {
+      console.log("ABC");
+    } else {
+      const response = { errorDescription: "INCORRECT_DATA_DEPLOYED_ERROR" }; // czy nie zwracac listy błedów -> jak starczy czasu i bedzie brakowac stron
+      res.send(response);
+    }
+  } else {
+    const response = { errorDescription: "INCORRECT_IDENTIFIER_ERROR" };
+    res.send(response);
+  }
+});
+
+app.post("/getCarsName", (req, res) => {
+  if (validToken(req.body.token)) {
+    const response = { carNames: getAllCarsName() };
+    res.send(response);
+  } else {
+    const response = { errorDescription: "INVALID_TOKEN" };
+    res.send(response);
+  }
+});
+
+app.post("/getCarModels", (req, res) => {
+  if (validToken(req.body.token)) {
+    const response = { carName: req.body.carName, models: getAllCarModels(req.body.carName) };
+    res.send(response);
+  } else {
+    const response = { errorDescription: "INVALID_TOKEN" };
+    res.send(response);
+  }
+});
+
+app.post("/correctCarObject", (req, res) => {
+  if (validToken(req.body.token)) {
+    const response = {
+      carDefinition: "car: { \
+      VIN: string;\
+      carName: string;\
+      model: string;\
+      yearProduction: string;\
+      weekProduction: string;\
+      bodyType: string;\
+      color: string;\
+      engineType: string;\
+      gearboxType: string;\
+      technicalCondition: string;\
+      mileage: string;\
+      date: string;}"};
+    res.send(response);
+  } else {
+    const response = { errorDescription: "INVALID_TOKEN" };
+    res.send(response);
+  }
+});
+
+// Functions
+
+function validToken(token: any) {
+  if (token === undefined || token == null) return false;
+  let payload;
+  try {
+    payload = jwt.verify(token, hashedPassword);
+  } catch (e) {
     return false;
   }
   return true;
 }
 
-function verifyVIN(vin: string): boolean {
-  if (vin.length !== 17) {
-    return false;
+function validVINNumber(vin: string) { // nie sprawdza sumy kontrolnej
+  if (vin === undefined || vin === null) return false;
+  const re = RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
+  return vin.match(re);
+}
+
+function validIdentifier(id: string) {
+  return true;
+}
+
+function generateToken(id: string) {
+  return jwt.sign({ id }, hashedPassword, { expiresIn: 1200 });
+}
+
+function getAllCarsName() {
+  const names: string[] = [];
+  for (const n of carsModels.carNamesAndModels) {
+    names.push(n.carName);
   }
-  const values = [
-    1, 2, 3, 4, 5, 6, 7, 8, 0, 1, 2, 3, 4, 5, 0, 7, 0, 9, 2, 3, 4, 5, 6, 7, 8, 9
-  ];
-  const weights = [8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2];
-  vin = vin.replace("-", "");
-  vin = vin.replace(" ", "");
-  vin = vin.toUpperCase();
-  let sum = 0;
-  for (let i = 0; i < 17; i++) {
-    const c = vin[i];
-    let value = 0;
-    const weigth = weights[i];
-    if (c >= "A" && c <= "Z") {
-      value = values[returnIndex(c, "A")];
-      if (value === 0) {
-        return false;
-      }
-    } else if (c >= "0" && c <= "9") {
-      value = returnIndex(c, "0");
-    } else {
-      return false;
-    }
-    sum += weigth * value;
+  return names;
+}
+
+function getAllCarModels(name: string) {
+  for (const n of carsModels.carNamesAndModels) {
+    if (n.carName === name) return n.models;
   }
-  sum = sum % 11;
-  const check = vin[8];
-  if (sum === 10 && check === "X") {
-    return true;
-  } else if (sum === transliterate(check)) {
+  return [];
+}
+
+function validEntity(car: Car) {
+  if (validVINNumber(car.VIN)
+    && validCarNameModel(car.carName, car.model)
+    && validYearProduction(car.yearProduction)
+    && validWeekProduction(car.weekProduction)
+    && validBodyType(car.bodyType)
+    && validEngineType(car.engineType)
+    && validGearBox(car.gearboxType)
+    && validTechnicalCondition(car.technicalCondition)) {
     return true;
   } else {
     return false;
   }
 }
 
-function returnIndex(char1: string, char2: string) {
-  let firstIndex = 0;
-  let secondIndex = 0;
-  const letters = [
-    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-  ];
-  for (let i = 0; i < letters.length; i++) {
-    if (letters[i] === char1) {
-      firstIndex = i;
-    }
-    if (letters[i] === char2) {
-      secondIndex = i;
+function validCarNameModel(name: string, model: string) {
+  if (name === undefined || name === null || model === undefined || model === null) return false;
+  for (const n of carsModels.carNamesAndModels) {
+    if (n.carName === name) {
+      for (const q of n.models) {
+        if (q === model) return true;
+      }
+      return false;
     }
   }
-  return firstIndex - secondIndex;
+  return false;
 }
 
-function transliterate(check: string) {
-  if (check === "A" || check === "J") return 1;
-  if (check === "B" || check === "K" || check === "S") return 2;
-  if (check === "C" || check === "L" || check === "T") return 3;
-  if (check === "D" || check === "M" || check === "U") return 4;
-  if (check === "E" || check === "N" || check === "V") return 5;
-  if (check === "F" || check === "W") return 6;
-  if (check === "G" || check === "P" || check === "X") return 7;
-  if (check === "H" || check === "Y") return 8;
-  if (check === "R" || check === "Z") return 9;
-  return -1;
+function validCarName(name: string) {
+  if (name === undefined || name === null) return false;
+  for (const n of carsModels.carNamesAndModels) {
+    if (n.carName === name) return true;
+  }
+  return false;
 }
+
+function validModelName(name: string, models: string[]) {
+  if (name === undefined || name === null) return false;
+  for (const n of models) {
+    if (n === name) return true;
+  }
+  return false;
+}
+
+function validYearProduction(year: string) {
+  if (year === undefined || year === null) return false;
+  return true;
+}
+
+function validWeekProduction(week: string) {
+  if (week === undefined || week === null) return false;
+  return true;
+}
+
+function validBodyType(body: string) {
+  if (body === undefined || body === null) return false;
+  return true;
+}
+
+function validEngineType(engine: string) {
+  if (engine === undefined || engine === null) return false;
+  return true;
+}
+
+function validGearBox(gearbox: string) {
+  if (gearbox === undefined || gearbox === null) return false;
+  return true;
+}
+
+function validTechnicalCondition(condition: string) {
+  if (condition === undefined || condition === null) return false;
+  return true;
+}
+
 
 class Car {
   VIN: string;
@@ -135,4 +250,20 @@ class Car {
   date: string;
 }
 
+/*SQL TODO:
+  -dodać kolumne identyfikator
+  -każdy kto będzie chciał dodać nową encję:
+    *podaje w pierwszym połączeniu swój identyfikator
+    *jeśli jest prawidłowy system zwraca token
+    *użytkownik wysyła dane
+    *weryfikacja VIN
+    *weryfikacja danych
+    *potwierdzenie danych
+    *koniec
+
+
+*/
+
+
 // npm run start
+// https://en.it1352.com/article/377cb1a815894df69e8143a45246ce0f.html

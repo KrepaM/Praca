@@ -51,6 +51,7 @@ export class AppComponent {
   carWasScrapedLabel;
 
   // Functions
+
   changeInputClass() {
     if (this.inputClassName === this.defaultInputClass) {
       this.inputClassName = this.errorInputClass;
@@ -60,114 +61,27 @@ export class AppComponent {
   }
 
   searchVIN() {
-    if (this.verifyVIN()) {
-      this.szukajInformacjiPoVIN();
-      this.search = false;
-    } else {
-      this.changeInputClass();
-    }
-  }
-
-  verifyVIN(): boolean {
-    if (this.vin.length != 17) {
-      return false;
-    }
-    const values = [
-      1, 2, 3, 4, 5, 6, 7, 8, 0, 1, 2, 3, 4, 5, 0, 7, 0, 9, 2, 3, 4, 5, 6, 7, 8, 9
-    ];
-    const weights = [8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2];
-    this.vin = this.vin.replace("-", "");
-    this.vin = this.vin.replace(" ", "");
-    this.vin = this.vin.toUpperCase();
-    let sum = 0;
-    for (let i = 0; i < 17; i++) {
-      const c = this.vin[i];
-      let value = 0;
-      const weigth = weights[i];
-      if (c >= "A" && c <= "Z") {
-        value = values[this.returnIndex(c, "A")];
-        if (value === 0) {
-          return false;
-        }
-      } else if (c >= "0" && c <= "9") {
-        value = this.returnIndex(c, "0");
-      } else {
-        return false;
-      }
-      sum += weigth * value;
-      // console.log('loop sum', sum);
-    }
-    sum = sum % 11;
-    const check = this.vin[8];
-    console.log('check ', check);
-    console.log('sum ', sum);
-    if (sum === 10 && check === "X") {
-      return true;
-    } else if (sum === this.transliterate(check)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  returnIndex(char1: string, char2: string) {
-    let firstIndex = 0;
-    let secondIndex = 0;
-    const letters = [
-      "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-    ];
-    const numbers = [
-      "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-    ];
-    //Letters
-    for (let i = 0; i < letters.length; i++) {
-      if (letters[i] == char1) {
-        firstIndex = i;
-      }
-      if (letters[i] == char2) {
-        secondIndex = i;
-      }
-    }
-    //Numbers
-    for (let i = 0; i < numbers.length; i++) {
-      if (numbers[i] == char1) {
-        firstIndex = i;
-      }
-      if (numbers[i] == char2) {
-        secondIndex = i;
-      }
-    }
-    return firstIndex - secondIndex;
-  }
-
-  transliterate(check: string) {
-    if (check == "A" || check == "J") return 1;
-    if (check == "B" || check == "K" || check == "S") return 2;
-    if (check == "C" || check == "L" || check == "T") return 3;
-    if (check == "D" || check == "M" || check == "U") return 4;
-    if (check == "E" || check == "N" || check == "V") return 5;
-    if (check == "F" || check == "W") return 6;
-    if (check == "G" || check == "P" || check == "X") return 7;
-    if (check == "H" || check == "Y") return 8;
-    if (check == "R" || check == "Z") return 9;
-    if (check >= "0" && check <= "9") return parseInt(check, 10);
-    return -1;
+    this.szukajInformacjiPoVIN();
+    this.search = false;
   }
 
   //info: 1 - stolen, 2 - scraped, 3 - new owner
 
   szukajInformacjiPoVIN() {
-    this.connection.getInfo(this.vin).subscribe((res: { info: any[], addInfo: any[] }) => {
-      console.log(res);
-      this.mainInfo = res.info;
-      this.addInfo = res.addInfo;
-      for (let i = 0; i < this.addInfo.length; i++) {
-        if (this.addInfo[i].info === 1) {
-          this.stolenInfo.push(this.addInfo[i]);
-        } else if (this.addInfo[i].info === 2) {
-          this.scrapInfo.push(this.addInfo[i]);
-        } else if (this.addInfo[i].info === 3) {
-          this.numberOfOwners++;
+    this.connection.getInfo(this.vin).subscribe((res) => {
+      if (res.statement === this.translator.translate("VIN_NUMBER_NOT_FOUND_WARNING_LABEL")) {
+        this.changeInputClass()
+      } else {
+        this.mainInfo = res.info;
+        this.addInfo = res.addInfo;
+        for (let i = 0; i < this.addInfo.length; i++) {
+          if (this.addInfo[i].info === 1) {
+            this.stolenInfo.push(this.addInfo[i]);
+          } else if (this.addInfo[i].info === 2) {
+            this.scrapInfo.push(this.addInfo[i]);
+          } else if (this.addInfo[i].info === 3) {
+            this.numberOfOwners++;
+          }
         }
       }
     });
@@ -176,8 +90,6 @@ export class AppComponent {
   return() {
     this.search = true;
   }
-
-  generatePDFFile() { }
 
   clearInput() {
     this.vin = "";
