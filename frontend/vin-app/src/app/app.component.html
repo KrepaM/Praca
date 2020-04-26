@@ -20,7 +20,7 @@
     </div>
   </div>
   <div *ngIf="!search" class="display-component">
-    <table>
+    <table *ngIf="stolenInfo && stolenInfo.length > 0">
       <tr *ngFor="let stolen of stolenInfo">
         <td>
           {{stolen.date | date:'yyyy-MM-dd' }}
@@ -42,7 +42,7 @@
           {{vinLabel}}
         </td>
         <td>
-          {{mainInfo[0].VIN}}
+          {{vin}}
         </td>
       </tr>
       <tr>
@@ -82,20 +82,38 @@
           <button (click)="return()" class="button" style="margin-right: 5px">{{returnLabel}}</button>
         </td>
         <td>
+        <!--
           <button (click)="generatePDFFile()" class="button" style="margin-right: 5px">{{generateRaport}}</button>
+        -->
         </td>
       </tr>
     </table>
   </div>
   <div *ngIf="!search">
-    <div *ngFor="let instance of mainInfo" class="center-second">
-      <info-instance [car]="instance" [languageIndex]="languageIndex"></info-instance>
+    <div *ngIf="mainInfo && mainInfo.length > 0">
+      <div *ngFor="let instance of mainInfo" class="center-second">
+        <info-instance [car]="instance" [languageIndex]="languageIndex"></info-instance>
+      </div>
+    </div>
+    <div *ngIf="!mainInfo || mainInfo.length == 0">
+      <table>
+        <tr>
+          <td>
+            BRAK INFORMACJI
+          </td>
+          <td>
+            <button (click)="return()" class="button" style="margin-right: 5px">{{returnLabel}}</button>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>
+<!---
 <div class="footer">
   <div class="label">
     FOOTER
   </div>
 </div>
+-->
 

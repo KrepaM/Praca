@@ -38,6 +38,7 @@ export class InfoInstance implements OnChanges {
   //Functions
   changeShowStatus() {
     this.showDetails = !this.showDetails;
+    this.showDetailsLabel = (this.showDetailsLabel === this.translator.translate('SHOW_DETAILS_LABEL')) ? this.translator.translate('HIDE_DETAILS_LABEL') : this.translator.translate('SHOW_DETAILS_LABEL');
   }
 
   updateLabels() {

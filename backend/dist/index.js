@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mysql_1 = __importDefault(require("mysql"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const dictionary_1 = require("./dictionary");
 const con = mysql_1.default.createConnection({
     host: 'localhost',
@@ -17,6 +18,8 @@ const hashedPassword = "9f01b4bc5b32af8161d79b1363c7e012";
 const carsModels = new dictionary_1.Dictionary();
 const serverPort = 8080;
 const app = express_1.default();
+const bc = bcrypt_1.default;
+const salt = 10;
 app.use(express_1.default.json());
 // Start server
 app.listen(serverPort, () => {
@@ -48,7 +51,6 @@ app.post("/getInfoByVIN", (req, res) => {
     }
 });
 app.post("/sendIdentifier", (req, res) => {
-    console.log(req.body.identifier);
     if (req.body.identifier && req.body.identifier.length > 5 && validIdentifier(req.body.identifier)) {
         const response = { auth: true, token: generateToken(req.body.identifier.toString()) };
         res.send(response);
@@ -58,7 +60,7 @@ app.post("/sendIdentifier", (req, res) => {
         res.send(response);
     }
 });
-app.post("/saveNewEntity", (req, res) => {
+app.post("/saveNewCarEntity", (req, res) => {
     if (validToken(req.body.token)) {
         if (validEntity(req.body.car)) {
             console.log("ABC");
@@ -70,6 +72,34 @@ app.post("/saveNewEntity", (req, res) => {
     }
     else {
         const response = { errorDescription: "INCORRECT_IDENTIFIER_ERROR" };
+        res.send(response);
+    }
+});
+app.post("/saveNewInstitutionEntity", (req, res) => {
+    if (validToken(req.body.token)) {
+        const result = insertInstitution(req.body.institution);
+    }
+    else {
+        const response = { errorDescription: "INCORRECT_IDENTIFIER_ERROR" };
+        res.send(response);
+    }
+});
+app.post("/saveNewOperatorEntity", (req, res) => {
+    if (validToken(req.body.token)) {
+        con.query("SELECT * FROM INSTITUTION WHERE VIN = '" + encrypt(req.body.id) + "'", (err, rows, fields) => {
+            if (err)
+                throw err;
+            if (rows.length === 1 && rows[0].ableToAddEmployee === 1) {
+                console.log("ABC");
+            }
+            else {
+                const response = { errorDescription: "INVALID_ID" };
+                res.send(response);
+            }
+        });
+    }
+    else {
+        const response = { errorDescription: "INVALID_TOKEN" };
         res.send(response);
     }
 });
@@ -133,14 +163,21 @@ function validToken(token) {
 function validVINNumber(vin) {
     if (vin === undefined || vin === null)
         return false;
+    /*
     const re = RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
     return vin.match(re);
+    */
+    return true;
 }
 function validIdentifier(id) {
+    con.query("SELECT * FROM  WHERE VIN = '" + id + "'", (err, rows, fields) => {
+        if (err)
+            throw err;
+    });
     return true;
 }
 function generateToken(id) {
-    return jsonwebtoken_1.default.sign({ id }, hashedPassword, { expiresIn: 120 });
+    return jsonwebtoken_1.default.sign({ id }, hashedPassword, { expiresIn: 1200 });
 }
 function getAllCarsName() {
     const names = [];
@@ -233,21 +270,33 @@ function validTechnicalCondition(condition) {
         return false;
     return true;
 }
+function generateEncryptedInstitutionId(name) {
+    return bc.hash(name + new Date(), salt);
+}
+function encrypt(value) {
+    return bc.hash(value, salt);
+}
+function insertInstitution(institution) {
+    // validation
+    con.query("INSERT INTO INSTITUTION VALUES( \
+    id, \
+    active, \
+    name, \
+    startDate, \
+    ableToAddEmployee) VALUES('" +
+        generateEncryptedInstitutionId(institution.name) + "', " +
+        "1, " +
+        encrypt(institution.name) + ", " +
+        "CURRENT_DATE, " +
+        "1, " +
+        ")", (err, rows, fields) => {
+        if (err)
+            throw err;
+    });
+    return true;
+}
 class Car {
 }
-/*SQL TODO:
-  -dodać kolumne identyfikator
-  -każdy kto będzie chciał dodać nową encję:
-    *podaje w pierwszym połączeniu swój identyfikator
-    *jeśli jest prawidłowy system zwraca token
-    *użytkownik wysyła dane
-    *weryfikacja VIN
-    *weryfikacja danych
-    *potwierdzenie danych
-    *koniec
-
-
-*/
 // npm run start
 // https://en.it1352.com/article/377cb1a815894df69e8143a45246ce0f.html
 //# sourceMappingURL=index.js.map

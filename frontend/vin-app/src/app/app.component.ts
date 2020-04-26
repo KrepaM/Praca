@@ -69,11 +69,16 @@ export class AppComponent {
 
   szukajInformacjiPoVIN() {
     this.connection.getInfo(this.vin).subscribe((res) => {
+      this.mainInfo = res.info;
+      this.addInfo = res.addInfo;
+      console.log("res " + res.statement);
+      console.log(res.statement instanceof Object);
       if (res.statement === this.translator.translate("VIN_NUMBER_NOT_FOUND_WARNING_LABEL")) {
+
         this.changeInputClass()
       } else {
-        this.mainInfo = res.info;
-        this.addInfo = res.addInfo;
+        // this.mainInfo = res.info;
+        // this.addInfo = res.addInfo;
         for (let i = 0; i < this.addInfo.length; i++) {
           if (this.addInfo[i].info === 1) {
             this.stolenInfo.push(this.addInfo[i]);

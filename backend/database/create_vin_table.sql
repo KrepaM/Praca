@@ -11,5 +11,7 @@ CREATE TABLE VIN_APP.VIN_INFO (
     gearboxType VARCHAR(10) NOT NULL,
     technicalCondition VARCHAR(10) NOT NULL,
     mileage VARCHAR(7) NOT NULL,
-    date DATE NOT NULL
+    date DATE NOT NULL,
+    operatorId VARCAHR(100) NOT NULL,
+    FOREIGN KEY (operatorId) REFERENCES VIN_APP.OPERATOR
 );

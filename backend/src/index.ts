@@ -18,6 +18,10 @@ const carsModels = new Dictionary();
 const serverPort = 8080;
 const app = express();
 
+const bc = bcrypt;
+
+const salt = 10;
+
 app.use(express.json());
 
 // Start server
@@ -61,7 +65,7 @@ app.post("/sendIdentifier", (req, res) => {
   }
 });
 
-app.post("/saveNewEntity", (req, res) => {
+app.post("/saveNewCarEntity", (req, res) => {
   if (validToken(req.body.token)) {
     if (validEntity(req.body.car)) {
       console.log("ABC");
@@ -71,6 +75,33 @@ app.post("/saveNewEntity", (req, res) => {
     }
   } else {
     const response = { errorDescription: "INCORRECT_IDENTIFIER_ERROR" };
+    res.send(response);
+  }
+});
+
+
+app.post("/saveNewInstitutionEntity", (req, res) => {
+  if (validToken(req.body.token)) {
+    const result = insertInstitution(req.body.institution);
+  } else {
+    const response = { errorDescription: "INCORRECT_IDENTIFIER_ERROR" };
+    res.send(response);
+  }
+});
+
+app.post("/saveNewOperatorEntity", (req, res) => {
+  if (validToken(req.body.token)) {
+    con.query("SELECT * FROM INSTITUTION WHERE VIN = '" + encrypt(req.body.id) + "'", (err, rows, fields) => {
+      if (err) throw err;
+      if (rows.length === 1 && rows[0].ableToAddEmployee === 1) {
+        console.log("ABC");
+      } else {
+        const response = { errorDescription: "INVALID_ID" };
+        res.send(response);
+      }
+    });
+  } else {
+    const response = { errorDescription: "INVALID_TOKEN" };
     res.send(response);
   }
 });
@@ -133,11 +164,17 @@ function validToken(token: any) {
 
 function validVINNumber(vin: string) { // nie sprawdza sumy kontrolnej
   if (vin === undefined || vin === null) return false;
+  /*
   const re = RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
   return vin.match(re);
+  */
+  return true;
 }
 
 function validIdentifier(id: string) {
+  con.query("SELECT * FROM  WHERE VIN = '" + id + "'", (err, rows, fields) => {
+    if (err) throw err;
+  });
   return true;
 }
 
@@ -234,6 +271,32 @@ function validTechnicalCondition(condition: string) {
   return true;
 }
 
+function generateEncryptedInstitutionId(name: string) {
+  return bc.hash(name + new Date(), salt);
+}
+
+function encrypt(value: string) {
+  return bc.hash(value, salt);
+}
+
+function insertInstitution(institution: any) {
+  // validation
+  con.query("INSERT INTO INSTITUTION VALUES( \
+    id, \
+    active, \
+    name, \
+    startDate, \
+    ableToAddEmployee) VALUES('" +
+    generateEncryptedInstitutionId(institution.name) + "', " +
+    "1, " +
+    encrypt(institution.name) + ", " +
+    "CURRENT_DATE, " +
+    "1, " +
+    ")", (err, rows, fields) => {
+      if (err) throw err;
+    });
+  return true;
+}
 
 class Car {
   VIN: string;
@@ -249,21 +312,6 @@ class Car {
   mileage: string;
   date: string;
 }
-
-/*SQL TODO:
-  -dodać kolumne identyfikator
-  -każdy kto będzie chciał dodać nową encję:
-    *podaje w pierwszym połączeniu swój identyfikator
-    *jeśli jest prawidłowy system zwraca token
-    *użytkownik wysyła dane
-    *weryfikacja VIN
-    *weryfikacja danych
-    *potwierdzenie danych
-    *koniec
-
-
-*/
-
 
 // npm run start
 // https://en.it1352.com/article/377cb1a815894df69e8143a45246ce0f.html
