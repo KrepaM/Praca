@@ -93,12 +93,15 @@ body {
   background-color: $rose-color;
   border: 1px solid $dark-blue-color;
   border-radius: $radius/3;
+  padding-left: 5px;
 }
 
 .error-input-class {
-  box-shadow: 0 0 3px red;
+  box-shadow: 0 0 5px red;
   border: none;
   border-radius: inherit;
+  font-weight: bold;
+  padding-left: 5px;
 }
 
 .search-component {

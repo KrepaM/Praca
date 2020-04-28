@@ -163,10 +163,10 @@ function validToken(token: any) {
 }
 
 function validVINNumber(vin: string) { // nie sprawdza sumy kontrolnej
-  if (vin === undefined || vin === null) return false;
+  // if (vin === undefined || vin === null || vin.length !== 17) return false;
   /*
-  const re = RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
-  return vin.match(re);
+    const re = RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
+    return vin.match(re);
   */
   return true;
 }

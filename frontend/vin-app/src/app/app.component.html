@@ -20,23 +20,7 @@
     </div>
   </div>
   <div *ngIf="!search" class="display-component">
-    <table *ngIf="stolenInfo && stolenInfo.length > 0">
-      <tr *ngFor="let stolen of stolenInfo">
-        <td>
-          {{stolen.date | date:'yyyy-MM-dd' }}
-        </td>
-        <td>
-          {{carWasStolenLabel}}
-        </td>
-      </tr>
-      <tr *ngFor="let scrap of scrapInfo">
-        <td>
-          {{scrap.date | date:'yyyy-MM-dd' }}
-        </td>
-        <td>
-          {{carWasScrapedLabel}}
-        </td>
-      </tr>
+    <table *ngIf="mainInfo && mainInfo.length > 0">
       <tr>
         <td class="label-color">
           {{vinLabel}}
@@ -88,15 +72,25 @@
         </td>
       </tr>
     </table>
-  </div>
-  <div *ngIf="!search">
-    <div *ngIf="mainInfo && mainInfo.length > 0">
-      <div *ngFor="let instance of mainInfo" class="center-second">
-        <info-instance [car]="instance" [languageIndex]="languageIndex"></info-instance>
-      </div>
-    </div>
-    <div *ngIf="!mainInfo || mainInfo.length == 0">
-      <table>
+    <table *ngIf="stolenInfo && stolenInfo.length > 0">
+      <tr *ngFor="let stolen of stolenInfo">
+        <td>
+          {{stolen.date | date:'yyyy-MM-dd' }}
+        </td>
+        <td>
+          {{carWasStolenLabel}}
+        </td>
+      </tr>
+      <tr *ngFor="let scrap of scrapInfo">
+        <td>
+          {{scrap.date | date:'yyyy-MM-dd' }}
+        </td>
+        <td>
+          {{carWasScrapedLabel}}
+        </td>
+      </tr>
+    </table>
+    <table *ngIf="!mainInfo || mainInfo.length == 0">
         <tr>
           <td>
             BRAK INFORMACJI
@@ -106,6 +100,12 @@
           </td>
         </tr>
       </table>
+  </div>
+  <div *ngIf="!search">
+    <div *ngIf="mainInfo && mainInfo.length > 0">
+      <div *ngFor="let instance of mainInfo" class="center-second">
+        <info-instance [car]="instance" [languageIndex]="languageIndex"></info-instance>
+      </div>
     </div>
   </div>
 </div>

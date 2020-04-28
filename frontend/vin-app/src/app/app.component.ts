@@ -62,7 +62,6 @@ export class AppComponent {
 
   searchVIN() {
     this.szukajInformacjiPoVIN();
-    this.search = false;
   }
 
   //info: 1 - stolen, 2 - scraped, 3 - new owner
@@ -71,12 +70,13 @@ export class AppComponent {
     this.connection.getInfo(this.vin).subscribe((res) => {
       this.mainInfo = res.info;
       this.addInfo = res.addInfo;
-      console.log("res " + res.statement);
-      console.log(res.statement instanceof Object);
-      if (res.statement === this.translator.translate("VIN_NUMBER_NOT_FOUND_WARNING_LABEL")) {
-
+      console.log('res ' + res.info.length);
+      // console.log("res " + res.statement + ' ' + "VIN_NUMBER_NOT_FOUND_WARNING_LABEL");
+      // console.log(res.statement instanceof Object);
+      if (res.statement && this.isCommunicate(res.statement)) {
         this.changeInputClass()
       } else {
+        this.search = false;
         // this.mainInfo = res.info;
         // this.addInfo = res.addInfo;
         for (let i = 0; i < this.addInfo.length; i++) {
@@ -98,6 +98,7 @@ export class AppComponent {
 
   clearInput() {
     this.vin = "";
+    this.inputClassName = this.defaultInputClass;
   }
 
   changeLanguage(index: number) {
@@ -147,6 +148,13 @@ export class AppComponent {
     } else {
       return false;
     }
+  }
+
+  isCommunicate(communicate: string): boolean {
+    for (let str of this.translator.languagesModule.keys) {
+      if (communicate === str) return true;
+    }
+    return false;
   }
 
   isAnyDeparture() {
